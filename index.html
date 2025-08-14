@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>skeletonfair</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom styles for the animation */
+        body {
+            font-family: 'Inter', sans-serif;
+            cursor: pointer; /* Indicate that the body is interactive */
+        }
+
+        .animation-container {
+            /* This container holds both images */
+            position: relative;
+            width: 200px;
+            /* Adjusted height for the shorter rectangle */
+            height: 250px; 
+            margin-top: 50px; 
+        }
+
+        .circular-image {
+            /* The top, circular image */
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            position: absolute;
+            top: 0;
+            left: 50%;
+            /* This line is key to centering the element horizontally. */
+            transform: translateX(-50%);
+            z-index: 10;
+            /* The animation will still run, moving it up from this centered position. */
+            animation: move-up 0.7s cubic-bezier(0.68, -0.55, 0.27, 1.55) 1s forwards;
+        }
+
+        .rectangular-gif-wrapper {
+            /* This wrapper clips the growing GIF */
+            position: absolute;
+            left: 50%;
+            top: 100px;
+            transform: translateX(-50%);
+            width: 500px;
+            height: 150px;
+            z-index: 5;
+            overflow: hidden;
+            margin: 0 auto;
+        }
+
+        .rectangular-gif {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 16px;
+            transform: scaleX(0);
+            transform-origin: center;
+            opacity: 0;
+            animation: grow-and-fade-in 0.6s ease-out 1.2s forwards;
+        }
+        @keyframes move-up {
+            from {
+                transform: translateY(0) translateX(-50%);
+            }
+            to {
+                transform: translateY(-100px) translateX(-50%);
+            }
+        }
+        @keyframes grow-and-fade-in {
+            from {
+                transform: scaleX(0);
+                opacity: 0;
+            }
+            to {
+                transform: scaleX(1);
+                opacity: 1;
+            }
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+            opacity: 0;
+            animation: fade-in 0.5s ease-in 2s forwards;
+        }
+
+        .square-image-button {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px; /* Optional: for rounded corners */
+            cursor: pointer;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .square-image-button:hover {
+            transform: scale(1.1);
+        }
+
+        @keyframes fade-in {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body class="bg-black flex flex-col items-center justify-center min-h-screen">
+    <div class="animation-container">
+        <img src="https://files.catbox.moe/5a7ghl.jpeg" 
+             alt="pfp" 
+             class="circular-image bg-gray-700"
+             onerror="this.style.backgroundColor='#4a5568';">
+        <div class="rectangular-gif-wrapper">
+            <img src="https://files.catbox.moe/h0omp2.gif" 
+                 alt="gif" 
+                 class="rectangular-gif bg-gray-600"
+                 onerror="this.style.backgroundColor='#718096';">
+        </div>
+    </div>
+    <div class="button-container">
+        <a href="https://www.roblox.com/users/58271941"><img src="https://files.catbox.moe/muhqbs.jpg?text=Roblox" alt="roblox" class="square-image-button"></a>
+        <a href="https://discord.gg/cY2f4YxF"><img src="https://files.catbox.moe/39er5q.jpg?text=Discord" alt="discord" class="square-image-button"></a>
+    </div>
+
+    <script>
+        const audioPlaylist = [
+            "https://files.catbox.moe/goqtpm.mp3",
+            "https://files.catbox.moe/u23fdo.mp3", 
+            "https://files.catbox.moe/3ppke7.mp3",
+            "https://files.catbox.moe/48nx2x.mp3",
+            "https://files.catbox.moe/a5iit8.mp3"
+        ];
+        let currentSongIndex = 0;
+        const audioPlayer = new Audio();
+        let audioStarted = false;
+
+        // Using DOMContentLoaded to ensure the page is fully loaded before attaching the event listener.
+        document.addEventListener("DOMContentLoaded", () => {
+            // Attach the click listener to the entire document body
+            document.body.addEventListener("click", handleUserInteraction, { once: true }); // Using { once: true } to ensure it only runs once
+        });
+
+        // Function to handle user interaction and start audio
+        function handleUserInteraction() {
+            if (!audioStarted) {
+                playCurrentSong();
+                audioStarted = true;
+            }
+        }
+
+        audioPlayer.addEventListener("ended", () => {
+            currentSongIndex++;
+            if (currentSongIndex < audioPlaylist.length) {
+                playCurrentSong();
+            } else {
+                currentSongIndex = 0; // Loop back to the beginning of the playlist
+                playCurrentSong();
+            }
+        });
+
+        function playCurrentSong() {
+            audioPlayer.src = audioPlaylist[currentSongIndex];
+            audioPlayer.play().catch(error => {
+                // Catch any errors that might occur during play() due to browser restrictions
+                console.error("Audio playback error:", error);
+                // You could add a visual indicator here to inform the user that audio couldn't play
+                // For example: alert("Music could not play automatically. Please check your browser's autoplay settings.");
+            });
+        }
+    </script>
+</body>
+</html>
